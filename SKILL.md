@@ -67,7 +67,7 @@ For each taken id: `scripts/fetch-transcript.sh <id> STATE_DIR/transcripts`. Pub
 
 ## Step 4: read, then write the row
 
-Read the whole transcript, not the first third; the load-bearing claim in a 40-minute video is often at minute 31. Read the description for names, chapter marks and the sponsor disclosure. Names come from the description or on-screen title; a name that exists only in the captions does not go in the row.
+Read the whole transcript, not the first third; the load-bearing claim in a 40-minute video is often at minute 31. Read the description for names, chapter marks and the sponsor disclosure. Names come from the description or on-screen title. A caption-only name may stay when the same transcript line ties it to a checkable company or product ("Collison from Stripe", "Steinberger of OpenClaw"); if the captions misheard it, write the corrected form only when that pairing makes it unambiguous, otherwise drop it. A bare caption-only name with no such anchor does not go in the row.
 
 Append one block per video to `runs/<date>/rows.md`, in this exact shape:
 
