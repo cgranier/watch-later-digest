@@ -32,6 +32,7 @@ Requirements: a browser session logged into YouTube, `python3`, and `yt-dlp` (`s
 
 ```
 SKILL.md                     the procedure (loaded when the skill activates)
+BRIEF.md                     the build and test plan handed to the bot that brings this up on a new account
 scripts/
   bootstrap.sh               dependencies and state directories; first line of every run
   harvest-watch-later.js     read the list from the page; verify removals by id
