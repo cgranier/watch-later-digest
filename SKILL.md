@@ -5,7 +5,7 @@ license: MIT
 compatibility: Needs a browser session logged into YouTube, python3, and yt-dlp (scripts/bootstrap.sh installs it). Network access to youtube.com only.
 metadata:
   author: cgranier
-  version: "1.1"
+  version: "1.2"
   source: https://github.com/cgranier/watch-later-digest
 ---
 
@@ -26,8 +26,8 @@ Detailed material lives in the skill checkout (`$SKILL` below) and is loaded onl
    ```
    SKILL=/workspace/skills/watch-later-digest
    if [ ! -d "$SKILL/scripts" ]; then
-     git clone --depth 1 --branch v1.1 https://github.com/cgranier/watch-later-digest "$SKILL" \
-     || { mkdir -p "$SKILL" && curl -sL https://github.com/cgranier/watch-later-digest/archive/refs/tags/v1.1.tar.gz \
+     git clone --depth 1 --branch v1.2 https://github.com/cgranier/watch-later-digest "$SKILL" \
+     || { mkdir -p "$SKILL" && curl -sL https://github.com/cgranier/watch-later-digest/archive/refs/tags/v1.2.tar.gz \
           | tar xz -C "$SKILL" --strip-components=1; }
    fi
    ```

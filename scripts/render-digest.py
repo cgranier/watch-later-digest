@@ -175,7 +175,8 @@ def md_digest(rows, headline, intro, footer, title, stamp) -> str:
         if r["call"] != group:
             group = r["call"]
             out += [f"### {group.capitalize()}", ""]
-        kept = f"{fmt_clock(r['kept'])} of {fmt_clock(r['duration'])}"
+        kept = (f"{fmt_clock(r['kept'])} of {fmt_clock(r['duration'])}" if r["call"] in ("watch", "skim")
+                else fmt_clock(r["duration"]))
         out += [f"## {r['n']}. {r['title']}",
                 f"{r['channel']} · {r['published']} · {kept} · lens: {r['lens']} · "
                 f"[open](https://www.youtube.com/watch?v={r['id']})", ""]
@@ -237,7 +238,7 @@ def html_digest(rows, headline, intro, footer, title, stamp) -> str:
                      f"<a href='{url}'><img src='https://i.ytimg.com/vi/{r['id']}/hqdefault.jpg' alt=''></a><div>"
                      f"<h3><span class='num'>{r['n']}.</span><a href='{url}'>{e(r['title'])}</a></h3>"
                      f"<div class='meta'><span class='call c-{r['call']}'>{r['call']}</span>{e(r['channel'])} · {e(r['published'])} · "
-                     f"{fmt_clock(r['kept'])} of {fmt_clock(r['duration'])} · lens: {e(r['lens'])}</div>"
+                     f"{(fmt_clock(r['kept']) + ' of ' if r['call'] in ('watch', 'skim') else '')}{fmt_clock(r['duration'])} · lens: {e(r['lens'])}</div>"
                      f"<p class='tldr'>{e(r['tldr'])}</p>"
                      "<ul class='kt'>" + "".join(f"<li>{e(t)}</li>" for t in r["takeaways"]) + "</ul>"
                      f"<p class='ws'><b>Watch / skip.</b> {e(r['call_text'])}</p>")
@@ -306,7 +307,13 @@ def main() -> int:
     if args.list_note:
         footer.append(f"List: {args.list_note}")
     footer.append("Reply with the row numbers you watched, and any you wish I had called differently.")
-    stamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
+    tz = prof.get("settings", {}).get("timezone", "")
+    try:
+        from zoneinfo import ZoneInfo
+        now = dt.datetime.now(ZoneInfo(tz)) if tz else dt.datetime.now()
+    except Exception:
+        now = dt.datetime.now()
+    stamp = now.strftime("%Y-%m-%d %H:%M") + (f" {tz}" if tz else "")
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     (out / "digest.md").write_text(md_digest(rows, headline, intro, footer, args.title, stamp), encoding="utf-8")
