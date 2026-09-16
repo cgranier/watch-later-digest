@@ -5,15 +5,15 @@ license: MIT
 compatibility: Needs a browser session logged into YouTube, python3, and yt-dlp (scripts/bootstrap.sh installs it). Network access to youtube.com only.
 metadata:
   author: cgranier
-  version: "1.0"
-  source: https://github.com/cgranier/watch-later-digest   # set when the repo is pushed; step 0 clones it
+  version: "1.1"
+  source: https://github.com/cgranier/watch-later-digest
 ---
 
 # Watch Later digest
 
 Turn the user's Watch Later list into one short, opinionated page per run: which videos deserve their time, which minutes of them, and which to skip. This is a filter, not a summarizer. A row is good if the user can decide in five seconds.
 
-Detailed material lives next to this file and is loaded only when a step needs it:
+Detailed material lives in the skill checkout (`$SKILL` below) and is loaded only when a step needs it:
 
 - `references/profile.md`: the profile format, the onboarding interview, calibration.
 - `references/digest.md`: the row format, the rubric in full, the digest layout.
@@ -22,12 +22,16 @@ Detailed material lives next to this file and is loaded only when a step needs i
 
 ## Before every run
 
-0. If `scripts/` is not next to this file (a marketplace template carries only this prose), fetch the skill at the tag matching `metadata.version` above:
+0. Make sure the skill's files are on disk. A marketplace template carries only this text, so fetch the rest at the pinned tag (never `main`; this text was written against that tag):
    ```
    SKILL=/workspace/skills/watch-later-digest
-   [ -d "$SKILL/scripts" ] || git clone --depth 1 --branch v1.0 <metadata.source> "$SKILL"
+   if [ ! -d "$SKILL/scripts" ]; then
+     git clone --depth 1 --branch v1.1 https://github.com/cgranier/watch-later-digest "$SKILL" \
+     || { mkdir -p "$SKILL" && curl -sL https://github.com/cgranier/watch-later-digest/archive/refs/tags/v1.1.tar.gz \
+          | tar xz -C "$SKILL" --strip-components=1; }
+   fi
    ```
-   and run every `scripts/...` path below from `$SKILL`. Never fetch `main`; the prose you are reading was packed against that tag.
+   Run every `scripts/...` and `references/...` path below from `$SKILL`.
 1. `scripts/bootstrap.sh STATE_DIR`. STATE_DIR must be durable. On Grok Bot use `/workspace/watch-later-digest/state`; on a laptop, a folder outside any temp dir. Everything below writes only there.
 2. `scripts/check-profile.py STATE_DIR/profile.md`. Exit 2 means stop: run the interview in `references/profile.md` and write the profile; do not fetch anything. Exit 1 means run, but say in the digest that calls on the named lenses will be rough.
 3. Read the profile. The lenses' `worth_it`, `enough` and `skip_when` lines are what decide the calls.
