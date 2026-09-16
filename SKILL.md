@@ -6,6 +6,7 @@ compatibility: Needs a browser session logged into YouTube, python3, and yt-dlp 
 metadata:
   author: cgranier
   version: "1.0"
+  source: https://github.com/OWNER/watch-later-digest   # set when the repo is pushed; step 0 clones it
 ---
 
 # Watch Later digest
@@ -21,6 +22,12 @@ Detailed material lives next to this file and is loaded only when a step needs i
 
 ## Before every run
 
+0. If `scripts/` is not next to this file (a marketplace template carries only this prose), fetch the skill at the tag matching `metadata.version` above:
+   ```
+   SKILL=/workspace/skills/watch-later-digest
+   [ -d "$SKILL/scripts" ] || git clone --depth 1 --branch v1.0 <metadata.source> "$SKILL"
+   ```
+   and run every `scripts/...` path below from `$SKILL`. Never fetch `main`; the prose you are reading was packed against that tag.
 1. `scripts/bootstrap.sh STATE_DIR`. STATE_DIR must be durable. On Grok Bot use `/workspace/watch-later-digest/state`; on a laptop, a folder outside any temp dir. Everything below writes only there.
 2. `scripts/check-profile.py STATE_DIR/profile.md`. Exit 2 means stop: run the interview in `references/profile.md` and write the profile; do not fetch anything. Exit 1 means run, but say in the digest that calls on the named lenses will be rough.
 3. Read the profile. The lenses' `worth_it`, `enough` and `skip_when` lines are what decide the calls.

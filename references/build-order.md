@@ -12,9 +12,14 @@ Do these in order. Do not schedule anything until three consecutive supervised r
 
 ## Packaging for a marketplace
 
-On Grok Bot, a bot is shared as a **template**: a bundle of its skills, memories and plugins that another user installs as a copy. Personal memories are filtered out automatically; make sure the filled-in `profile.md` and `seen.json` live in STATE_DIR, not inside the skill folder, so a template never carries them. What ships is this folder: the procedure, the scripts, the profile *template* and the interview. The installing user's first run is the interview.
+On Grok Bot, a bot is shared as a **template**: a bundle of its skills, memories and plugins that another user installs as a copy. Confirmed with the vendor's bot (2026-09-16): the pack **copies the skill prose into the template; it is a versioned snapshot, not a git pointer.** Installed copies do not update when the repo does. The loop is: edit the skill in the repo → tag it → re-pack → publish a new template version.
 
-Two things to verify on the target platform before publishing, because the vendor guides do not say:
+What that means for this skill:
 
-- Whether a template snapshots the skill body at publish time or links to its source. If it snapshots, a repo update does not reach installed copies; say so in the listing and version the `metadata.version` field.
-- Whether `git` and `python3` survive an agent-computer update. If not, `bootstrap.sh` needs an apt line for them too.
+- `SKILL.md` step 0 clones the repo at the tag named by `metadata.version`, so a template that carries only the prose still gets the scripts, references and assets, and gets the ones the prose was written against. Bump `metadata.version`, the tag in step 0, and the git tag together; they are one number.
+- The template ships this folder's *shape*, never a user's state. Keep `profile.md`, `seen.json` and transcripts in STATE_DIR, outside the skill folder. Personal memories are filtered by the packer, but files are not memories; do not rely on it.
+- Put the skill on its own bot (name it **Digest**, description from the brief), not on a bot that holds the author's own memories. A getting-started skill on that bot can run the onboarding interview, but the interview text lives here in `references/profile.md`; the getting-started skill should call it, not restate it.
+- Routines are not part of the pack as far as the vendor guides say. The installing user creates the routine after three supervised runs, per the sequence above. Say so in the template's description.
+- No plugins are needed. The browser is built in; `chat` and `file` delivery need nothing; `email` delivery needs whatever the platform offers and is the installing user's choice.
+
+Still to verify on the target platform: whether `git` and `python3` survive an agent-computer update. If not, `bootstrap.sh` needs an apt line for them, and step 0 needs one before the clone.

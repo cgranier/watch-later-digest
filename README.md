@@ -51,6 +51,10 @@ assets/
 tests/                       offline tests: python3 tests/test_all.py
 ```
 
+## Marketplace templates
+
+A Grok Bot template snapshots the skill's prose at pack time and does not follow the repo. `SKILL.md` therefore clones this repo at the tag named in its `metadata.version` on first run, so installed copies get the scripts the prose was written against. Release loop: edit → bump `metadata.version` and the tag in step 0 → `git tag vX.Y` → re-pack → publish the new template version.
+
 ## Tests
 
 ```bash
