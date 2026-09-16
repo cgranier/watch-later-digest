@@ -24,4 +24,4 @@ What that means for this skill:
 - Routines are not part of the pack as far as the vendor guides say. The installing user creates the routine after three supervised runs, per the sequence above. Say so in the template's description.
 - No plugins are needed. The browser is built in; `chat` and `file` delivery need nothing; `email` delivery needs whatever the platform offers and is the installing user's choice.
 
-Still to verify on the target platform: whether `git`, `curl` and `python3` survive an agent-computer update. Step 0 works with either `git` or `curl`; `python3` has no fallback, so if it is wiped `bootstrap.sh` needs an apt line for it.
+Durability on Grok Bot, as reported by the vendor's bot from its box runbook (2026-09-16, not yet confirmed by a marker test): an update keeps files and logins and reinstalls the base image, so stock `python3`, `git` and `curl` are present afterwards; anything pip-installed, including `yt-dlp`, is gone and `bootstrap.sh` puts it back. Step 0 and bootstrap cover that as written. A marker test (a file in `/workspace` and one in `$HOME`, then update, then check) is still worth running once before the template goes public.
