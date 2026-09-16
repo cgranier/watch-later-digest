@@ -40,7 +40,7 @@ State layout under STATE_DIR: `profile.md`, `seen.json`, `transcripts/<id>.*`, `
 
 ## Step 1: read Watch Later
 
-In the browser tab logged into YouTube, open `https://www.youtube.com/playlist?list=WL`, load `scripts/harvest-watch-later.js`, and run `await harvestWatchLater()`. Keep the tab in the foreground; YouTube stops lazy-loading in background tabs. Trust the result only when `stable` is true and `rendered` equals `header`; a count of exactly 100 or 200 is a lazy-load ceiling, not the list.
+In the browser tab logged into YouTube, open `https://www.youtube.com/playlist?list=WL`, load `scripts/harvest-watch-later.js`, and run `await harvestWatchLater()`. Keep the tab in the foreground; YouTube stops lazy-loading in background tabs. Trust the result only when `stable` is true and `rendered` equals `expected` (the header count minus the unavailable entries YouTube hides); a count of exactly 100 or 200 is a lazy-load ceiling, not the list.
 
 Save `items` to `runs/<date>/enumeration.json`. Newest-added is first; keep that order.
 

@@ -3,7 +3,7 @@
 // Load this file in the page (paste it, or evaluate it with the browser tool) on
 // https://www.youtube.com/playlist?list=WL, then:
 //
-//   await harvestWatchLater()        -> { header, rendered, stable, items: [{id,title,channel,length}] }
+//   await harvestWatchLater()        -> { header, hidden, expected, rendered, stable, items: [{id,title,channel,length}] }
 //   harvestNow()                     -> items only, no scrolling (what is rendered right now)
 //   verifyIds(["abc", "def"])        -> { present: [...], absent: [...] } from the rendered list
 //
@@ -48,25 +48,37 @@ function headerCount() {
   return null;
 }
 
+function hiddenCount() {
+  // "31 unavailable videos are hidden" -- deleted/private entries the list does
+  // not render unless "Show unavailable videos" is toggled. header - hidden is
+  // the real target for a complete harvest.
+  const m = document.body.innerText.match(/(\d+)\s+unavailable videos?\s+(?:is|are)\s+hidden/i);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
 async function harvestWatchLater({ waitMs = 1500, settleRounds = 5, maxRounds = 120 } = {}) {
-  let last = -1, same = 0, rounds = 0, header = headerCount();
+  let last = -1, same = 0, rounds = 0, header = headerCount(), hidden = hiddenCount();
+  const target = () => (header === null ? null : header - hidden);
   while (rounds < maxRounds) {
     window.scrollTo(0, document.documentElement.scrollHeight);
     await sleep(waitMs);
     const n = document.querySelectorAll("ytd-playlist-video-renderer").length;
     header = headerCount() ?? header;
+    hidden = hiddenCount() || hidden;
     same = n === last ? same + 1 : 0;
     last = n;
     rounds += 1;
-    if (same >= settleRounds && (header === null || n >= header)) break;
+    if (same >= settleRounds && (target() === null || n >= target())) break;
   }
   const items = harvestNow();
   return {
     header,
+    hidden,
+    expected: target(),
     rendered: items.length,
-    stable: same >= settleRounds && (header === null || items.length >= header),
+    stable: same >= settleRounds && (target() === null || items.length >= target()),
     rounds,
     items,
   };

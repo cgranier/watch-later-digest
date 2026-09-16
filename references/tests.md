@@ -4,7 +4,7 @@ Run all of these before calling a run clean. Report each as pass or fail with th
 
 | # | Test | Passes when |
 |---|---|---|
-| T1 | Enumeration is complete | `harvestWatchLater()` returned `stable: true` and `rendered` equals `header`. Log shows both numbers. |
+| T1 | Enumeration is complete | `harvestWatchLater()` returned `stable: true` and `rendered` equals `expected` (header minus hidden unavailable entries). Log shows all three numbers. |
 | T2 | Cap and order | At most `cap_per_run` videos processed; they are the newest by list position; the remainder is reported as a number. |
 | T3 | Dedup | A second run immediately after the first fetches nothing, writes no rows, changes no list, and says so in one line. |
 | T4 | Profile gate | With `profile.md` deleted, the bot asks the interview questions and fetches nothing. |
