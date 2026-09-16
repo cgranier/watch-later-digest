@@ -6,7 +6,7 @@ compatibility: Needs a browser session logged into YouTube, python3, and yt-dlp 
 metadata:
   author: cgranier
   version: "1.0"
-  source: https://github.com/OWNER/watch-later-digest   # set when the repo is pushed; step 0 clones it
+  source: https://github.com/cgranier/watch-later-digest   # set when the repo is pushed; step 0 clones it
 ---
 
 # Watch Later digest
